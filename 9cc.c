@@ -207,6 +207,7 @@ Node *new_node_num(int val) {
   return node;
 }
 
+// 前方宣言
 Node *expr();
 Node *equality();
 Node *relational();
