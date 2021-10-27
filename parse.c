@@ -95,6 +95,10 @@ Token *tokenize(char *p) {
       cur = new_token(TK_RESERVED, cur, p, 1);
       ++p;
       continue;
+    } else if ('a' <= *p && *p <= 'z') {
+      cur = new_token(TK_IDENT, cur, p, 1);
+      ++p;
+      continue;
     }
 
     if (isdigit(*p)) {
