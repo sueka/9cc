@@ -171,8 +171,6 @@ typedef enum {
   ND_NE,  // !-
   ND_LT,  // <
   ND_LTE, // <=
-  ND_GT,  // >
-  ND_GTE, // >=
   ND_ADD, // +
   ND_SUB, // -
   ND_MUL, // *
@@ -240,15 +238,16 @@ Node *equality() {
 Node *relational() {
   Node *node = add();
 
+  // > は < の両辺を入れ替えて実装する。ノードは木なので優先度のことは気にしなくてよい。
   for (;;) {
     if (consume("<")) {
       node = new_node(ND_LT, node, add());
     } else if (consume("<=")) {
       node = new_node(ND_LTE, node, add());
     } else if (consume(">")) {
-      node = new_node(ND_GT, node, add());
+      node = new_node(ND_LT, add(), node);
     } else if (consume(">=")) {
-      node = new_node(ND_GTE, node, add());
+      node = new_node(ND_LTE, add(), node);
     } else {
       return node;
     }
