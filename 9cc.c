@@ -156,6 +156,12 @@ Token *tokenize(char *p) {
 
 // 抽象構文木のノードの種類
 typedef enum {
+  ND_EQ,  // ==
+  ND_NE,  // !-
+  ND_LT,  // <
+  ND_LTE, // <=
+  ND_GT,  // >
+  ND_GTE, // >=
   ND_ADD, // +
   ND_SUB, // -
   ND_MUL, // *
