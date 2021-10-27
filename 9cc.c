@@ -54,7 +54,7 @@ void error_at(char *loc, char *fmt, ...) {
   exit(2);
 }
 
-// 現在のトークンが期待している記号の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+// 次のトークンが期待している記号の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
 bool consume(char op) {
   if (token->kind == TK_RESERVED && token->str[0] == op) {
     token = token->next;
@@ -65,7 +65,7 @@ bool consume(char op) {
   }
 }
 
-// 現在のトークンが期待している記号の場合はトークンを1つ読み進める。それ以外の場合はエラーを報告する。
+// 次のトークンが期待している記号の場合はトークンを1つ読み進める。それ以外の場合はエラーを報告する。
 void expect(char op) {
   if (token->kind != TK_RESERVED || token->str[0] != op) {
     error_at(token->str, "'%c' ではありません", op);
@@ -74,7 +74,7 @@ void expect(char op) {
   token = token->next;
 }
 
-// 現在のトークンが数値の場合はトークンを1つ読み進めてその数値を返す。それ以外の場合はエラーを報告する。
+// 次のトークンが数値の場合はトークンを1つ読み進めてその数値を返す。それ以外の場合はエラーを報告する。
 int expect_number() {
   if (token->kind != TK_NUM) {
     error_at(token->str, "数ではありません。");
