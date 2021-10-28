@@ -1,7 +1,7 @@
 9cc
 ===
 
-A C compiler I will make by reading https://www.sigbus.info/compilerbook.
+A C compiler I will make through reading https://www.sigbus.info/compilerbook.
 
 ## License
 
