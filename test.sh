@@ -39,5 +39,9 @@ assert 8 'return 8;'
 assert 14 'a = 3; b = 5 * 6 - 8; return a + b / 2;'
 assert 144 'x = 6; y = x + x; return y * y;'
 assert 6 'if (1) 6; else 28;'
+assert 2 'if (1) 2;'
+assert 0 'if (0) 2;'
+assert 0 'a = 5; while (a) a = a - 1; a;'
+assert 55 'sum; for (i = 1; i <= 10; i = i + 1) sum = sum + i; sum;'
 
 echo OK
