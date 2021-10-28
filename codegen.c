@@ -12,7 +12,7 @@ void gen_lval(Node *node) {
 }
 
 // 制御構造用の通し番号
-int c;
+int c = 0;
 
 void gen(Node *node) {
   switch (node->kind) {
