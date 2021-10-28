@@ -57,6 +57,7 @@ Token *tokenize(char *p);
 
 // 抽象構文木のノードの種類
 typedef enum {
+  ND_RETURN, // return
   ND_ASSIGN, // =
   ND_EQ,     // ==
   ND_NE,     // !-
