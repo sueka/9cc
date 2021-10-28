@@ -73,6 +73,13 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
   return tok;
 }
 
+int is_alnum(char c) {
+  return ('0' <= c && c <= '9') ||
+         ('A' <= c && c <= 'Z') ||
+         ('a' <= c && c <= 'z') ||
+         (c == '_');
+}
+
 // 入力文字列 p をトークナイズしてそれを返す。
 Token *tokenize(char *p) {
   Token head;
@@ -109,6 +116,10 @@ Token *tokenize(char *p) {
     ) {
       cur = new_token(TK_RESERVED, cur, p, 1);
       ++p;
+      continue;
+    } else if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6])) {
+      cur = new_token(TK_RETURN, cur, p, 6);
+      p += 6;
       continue;
     } else if ('a' <= *p && *p <= 'z') {
       // `if ('a' <= *p && *p <= 'z')` なので len >= 1 ではある
