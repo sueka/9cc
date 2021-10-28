@@ -37,5 +37,6 @@ assert 14 'a = 3; b = 5 * 6 - 8; a + b / 2;'
 assert 5 'return 5;'
 assert 8 'return 8;'
 assert 14 'a = 3; b = 5 * 6 - 8; return a + b / 2;'
+assert 144 'x = 6; y = x + x; return y * y;'
 
 echo OK
