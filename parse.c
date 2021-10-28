@@ -18,6 +18,19 @@ bool consume(char *op) {
   }
 }
 
+// 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。それ以外の場合は偽を返す。
+Token *consume_ident() {
+  if (token->kind == TK_IDENT) {
+    Token *result = token;
+
+    token = token->next;
+
+    return result;
+  } else {
+    return false;
+  }
+}
+
 // 次のトークンが期待している記号の場合はトークンを1つ読み進める。それ以外の場合はエラーを報告する。
 void expect(char *op) {
   if (
@@ -136,8 +149,27 @@ Node *new_node_num(int val) {
   return node;
 }
 
+Node *new_node_ident(int offset) {
+  Node *node = calloc(1, sizeof(Node));
+
+  node->kind = ND_LVAR;
+  node->offset = offset;
+
+  return node;
+}
+
 Node *expr() {
+  Node *node = assign();
+
+  return node;
+}
+
+Node *assign() {
   Node *node = equality();
+
+  if (consume("=")) {
+    node = new_node(ND_ASSIGN, node, assign());
+  }
 
   return node;
 }
@@ -223,6 +255,13 @@ Node *primary() {
     expect(")");
 
     return node;
+  }
+
+  // 可能なら識別子を消費
+  Token *tok = consume_ident();
+
+  if (tok) {
+    return new_node_ident((tok->str[0] - 'a' + 1) * 8);
   }
 
   // そうでなければ数値
