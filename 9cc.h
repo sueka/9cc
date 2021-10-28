@@ -84,7 +84,9 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs);
 
 Node *new_node_num(int val);
 
-// Node *program();
+extern Node *code[100];
+
+Node *program();
 Node *stmt();
 Node *expr();
 Node *assign();
