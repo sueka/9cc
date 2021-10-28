@@ -9,6 +9,10 @@
 typedef enum {
   TK_RESERVED, // 記号
   TK_RETURN,   // return キーワード
+  TK_IF,       // if キーワード
+  TK_ELSE,     // else キーワード
+  TK_WHILE,    // while キーワード
+  TK_FOR,      // for キーワード
   TK_IDENT,    // 識別子
   TK_NUM,      // 整数
   TK_EOF,      // 入力の終わり
@@ -58,6 +62,9 @@ Token *tokenize(char *p);
 // 抽象構文木のノードの種類
 typedef enum {
   ND_RETURN, // return
+  ND_IF,     // if, if-else
+  ND_WHILE,  // while
+  ND_FOR,    // for
   ND_ASSIGN, // =
   ND_EQ,     // ==
   ND_NE,     // !-
@@ -80,6 +87,17 @@ struct Node {
   Node *rhs;     // 右辺
   int val;       // kind が ND_NUM の場合のみ使う
   int offset;    // kind が ND_LVAR の場合のみ使う
+
+  // 制御構造用の値
+  // if (cond) then else otherwise
+  // while (cond) body
+  // for (init; cond; iter) body
+  Node *cond;
+  Node *then;
+  Node *otherwise;
+  Node *body;
+  Node *init;
+  Node *iter;
 };
 
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs);

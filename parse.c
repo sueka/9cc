@@ -29,6 +29,50 @@ bool consume_return() {
   return false;
 }
 
+// 次のトークンが `if` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+bool consume_if() {
+  if (token->kind == TK_IF) {
+    token = token->next;
+
+    return true;
+  }
+
+  return false;
+}
+
+// 次のトークンが `else` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+bool consume_else() {
+  if (token->kind == TK_ELSE) {
+    token = token->next;
+
+    return true;
+  }
+
+  return false;
+}
+
+// 次のトークンが `while` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+bool consume_while() {
+  if (token->kind == TK_WHILE) {
+    token = token->next;
+
+    return true;
+  }
+
+  return false;
+}
+
+// 次のトークンが `for` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+bool consume_for() {
+  if (token->kind == TK_FOR) {
+    token = token->next;
+
+    return true;
+  }
+
+  return false;
+}
+
 // 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。
 Token *consume_ident() {
   if (token->kind == TK_IDENT) {
@@ -132,6 +176,22 @@ Token *tokenize(char *p) {
       cur = new_token(TK_RETURN, cur, p, 6);
       p += 6;
       continue;
+    } else if (strncmp(p, "if", 2) == 0 && !is_alnum(p[2])) {
+      cur = new_token(TK_IF, cur, p, 2);
+      p += 2;
+      continue;
+    } else if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4])) {
+      cur = new_token(TK_ELSE, cur, p, 4);
+      p += 4;
+      continue;
+    } else if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5])) {
+      cur = new_token(TK_WHILE, cur, p, 5);
+      p += 5;
+      continue;
+    } else if (strncmp(p, "for", 3) == 0 && !is_alnum(p[3])) {
+      cur = new_token(TK_FOR, cur, p, 3);
+      p += 3;
+      continue;
     } else if ('a' <= *p && *p <= 'z') {
       // `if ('a' <= *p && *p <= 'z')` なので len >= 1 ではある
       cur = new_token(TK_IDENT, cur, p, 0);
@@ -215,11 +275,44 @@ Node *program() {
   code[i] = NULL; // terminal?
 }
 
-// stmt = expr ";" | "return" expr ";"
+// stmt = expr ";"
+//      | "if" "(" expr ")" stmt ("else" stmt)?
+//      | "while" "(" expr ")" stmt
+//      | "for" "(" expr? ";" expr? ";" expr? ")" stmt
+//      | "return" expr ";"
 Node *stmt() {
   Node *node;
 
-  if (consume_return()) {
+  if (consume_if()) {
+    node = new_node(ND_IF, NULL, NULL);
+
+    expect("(");
+    node->cond = expr();
+    expect(")");
+    node->then = stmt();
+
+    if (consume_else()) {
+      node->otherwise = stmt();
+    }
+  } else if (consume_while()) {
+    node = new_node(ND_WHILE, NULL, NULL);
+
+    expect("(");
+    node->cond = expr();
+    expect(")");
+    node->body = stmt();
+  } else if (consume_for()) {
+    node = new_node(ND_FOR, NULL, NULL);
+
+    expect("(");
+    node->init = expr();
+    expect(";");
+    node->cond = expr();
+    expect(";");
+    node->iter = expr();
+    expect(")");
+    node->body = stmt();
+  } else if (consume_return()) {
     // node = calloc(1, sizeof(Node));
     // node->kind = ND_RETURN;
     // node->lhs = expr();
