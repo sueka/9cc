@@ -18,7 +18,7 @@ bool consume(char *op) {
   }
 }
 
-// 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。それ以外の場合は偽を返す。
+// 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。
 Token *consume_ident() {
   if (token->kind == TK_IDENT) {
     Token *result = token;
@@ -27,7 +27,7 @@ Token *consume_ident() {
 
     return result;
   } else {
-    return false;
+    return NULL;
   }
 }
 
