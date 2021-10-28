@@ -159,6 +159,8 @@ Token *tokenize(char *p) {
       continue;
     } else if (
       *p == ';' ||
+      *p == '{' ||
+      *p == '}' ||
       *p == '=' ||
       *p == '<' ||
       *p == '>' ||
@@ -276,6 +278,7 @@ Node *program() {
 }
 
 // stmt = expr ";"
+//      | "{" stmt* "}"
 //      | "if" "(" expr ")" stmt ("else" stmt)?
 //      | "while" "(" expr ")" stmt
 //      | "for" "(" expr? ";" expr? ";" expr? ")" stmt
@@ -318,6 +321,15 @@ Node *stmt() {
     // node->lhs = expr();
     node = new_node(ND_RETURN, expr(), NULL);
     expect(";");
+  } else if (consume("{")) {
+    int i = 0;
+
+    node = calloc(1, sizeof(Node));
+    node->kind = ND_BLOCK;
+
+    while (!consume("}")) {
+      node->stmts[i++] = stmt();
+    }
   } else {
     node = expr();
     expect(";");

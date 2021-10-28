@@ -65,6 +65,7 @@ typedef enum {
   ND_IF,     // if, if-else
   ND_WHILE,  // while
   ND_FOR,    // for
+  ND_BLOCK,  // ブロック
   ND_ASSIGN, // =
   ND_EQ,     // ==
   ND_NE,     // !-
@@ -85,8 +86,15 @@ struct Node {
   NodeKind kind; // ノードの型
   Node *lhs;     // 左辺
   Node *rhs;     // 右辺
-  int val;       // kind が ND_NUM の場合のみ使う
-  int offset;    // kind が ND_LVAR の場合のみ使う
+
+  // kind が ND_NUM の場合のみ使う
+  int val;
+
+  // kind が ND_LVAR の場合のみ使う
+  int offset;
+
+  // kind が ND_BLOCK の場合のみ使う
+  Node *stmts[20];
 
   // 制御構造用の値
   // if (cond) then else otherwise
