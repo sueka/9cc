@@ -158,12 +158,14 @@ Node *new_node_ident(int offset) {
   return node;
 }
 
+// expr = assign
 Node *expr() {
   Node *node = assign();
 
   return node;
 }
 
+// assign = equality ("=" assign)?
 Node *assign() {
   Node *node = equality();
 
@@ -174,6 +176,7 @@ Node *assign() {
   return node;
 }
 
+// relational ("==" relational | "!=" relational)*
 Node *equality() {
   Node *node = relational();
 
@@ -188,6 +191,7 @@ Node *equality() {
   }
 }
 
+// add ("<" add | "<=" add | ">" add | ">=" add)*
 Node *relational() {
   Node *node = add();
 
@@ -207,6 +211,7 @@ Node *relational() {
   }
 }
 
+// mul ("+" mul | "-" mul)*
 Node *add() {
   Node *node = mul();
 
@@ -221,6 +226,7 @@ Node *add() {
   }
 }
 
+// mul = unary ("*" unary | "/" unary)*
 Node *mul() {
   Node *node = unary();
 
@@ -235,6 +241,7 @@ Node *mul() {
   }
 }
 
+// unary = ("+" | "-")? primary
 Node *unary() {
   if (consume("+")) {
     return primary();
@@ -247,6 +254,7 @@ Node *unary() {
   return primary();
 }
 
+// primary = "(" expr ")" | ident | num
 Node *primary() {
   // 次のトークンが "(" なら "(" expr ")"
   if (consume("(")) {
