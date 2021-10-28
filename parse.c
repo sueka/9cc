@@ -437,7 +437,9 @@ Node *unary() {
   return primary();
 }
 
-// primary = "(" expr ")" | ident | num
+// primary = "(" expr ")"
+//         | ident ("(" ")")?
+//         | num
 Node *primary() {
   // 次のトークンが "(" なら "(" expr ")"
   if (consume("(")) {
@@ -469,7 +471,18 @@ Node *primary() {
       locals = lvar;
     }
 
-    return new_node_ident(lvar->offset);
+    if (consume("(")) {
+      expect(")");
+
+      Node *node = calloc(1, sizeof(Node));
+
+      node->kind = ND_FCALL;
+      node->name = tok->str;
+
+      return node;
+    } else {
+      return new_node_ident(lvar->offset);
+    }
   }
 
   // そうでなければ数値

@@ -77,6 +77,7 @@ typedef enum {
   ND_DIV,    // /
   ND_NUM,    // 整数
   ND_LVAR,   // ローカル変数
+  ND_FCALL,  // 関数呼び出し
 } NodeKind;
 
 typedef struct Node Node;
@@ -92,6 +93,9 @@ struct Node {
 
   // kind が ND_LVAR の場合のみ使う
   int offset;
+
+  // kind が ND_FCALL の場合のみ使う
+  char *name;
 
   // kind が ND_BLOCK の場合のみ使う
   Node *stmts[20];
