@@ -139,6 +139,19 @@ Token *tokenize(char *p) {
   return head.next;
 }
 
+LVar *locals;
+
+LVar *find_lvar(Token *tok) {
+  for (LVar *var = locals; var; var = var->next) {
+    if (var->len == tok->len && !memcmp(tok->str, var->name, var->len)) {
+      return var;
+    }
+
+  }
+
+  return NULL;
+}
+
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs) {
   Node *node = calloc(1, sizeof(Node));
 
@@ -300,7 +313,18 @@ Node *primary() {
   Token *tok = consume_ident();
 
   if (tok) {
-    return new_node_ident((tok->str[0] - 'a' + 1) * 8);
+    LVar *lvar = find_lvar(tok);
+
+    if (!lvar) {
+      lvar = calloc(1, sizeof(LVar));
+      lvar->next = locals;
+      lvar->name = tok->str;
+      lvar->len = tok->len;
+      lvar->offset = locals->offset + 8;
+      locals = lvar;
+    }
+
+    return new_node_ident(lvar->offset);
   }
 
   // そうでなければ数値

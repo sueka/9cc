@@ -97,6 +97,19 @@ Node *mul();
 Node *unary();
 Node *primary();
 
+typedef struct LVar LVar;
+
+// ローカル変数の型
+struct LVar {
+  LVar *next; // 次の変数か NULL
+  char *name; // 変数の名前
+  int len;    // 名前の長さ
+  int offset; // RBP からのオフセット
+};
+
+// ローカル変数
+extern LVar *locals;
+
 void gen(Node *node);
 
 // int main(int argc, char **argv);
