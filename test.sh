@@ -32,5 +32,7 @@ assert 1 '3>2;'
 assert 0 '1<1;'
 assert 0 '1>1;'
 assert 0 '3>2>1;' # 3>2 が 1 なので 1>1 は 0
+assert 3 'a = 3;'
+assert 14 'a = 3; b = 5 * 6 - 8; a + b / 2;'
 
 echo OK
