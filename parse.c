@@ -97,6 +97,7 @@ Token *tokenize(char *p) {
       continue;
     } else if (
       *p == ';' ||
+      *p == '=' ||
       *p == '<' ||
       *p == '>' ||
       *p == '+' ||
