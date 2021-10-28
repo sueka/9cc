@@ -317,11 +317,11 @@ Node *stmt() {
     // node->kind = ND_RETURN;
     // node->lhs = expr();
     node = new_node(ND_RETURN, expr(), NULL);
+    expect(";");
   } else {
     node = expr();
+    expect(";");
   }
-
-  expect(";");
 
   return node;
 }
