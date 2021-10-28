@@ -18,6 +18,17 @@ bool consume(char *op) {
   }
 }
 
+// 次のトークンが `return` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+bool consume_return() {
+  if (token->kind == TK_RETURN) {
+    token = token->next;
+
+    return true;
+  }
+
+  return false;
+}
+
 // 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。
 Token *consume_ident() {
   if (token->kind == TK_IDENT) {
@@ -208,7 +219,7 @@ Node *program() {
 Node *stmt() {
   Node *node;
 
-  if (consume("return")) {
+  if (consume_return()) {
     // node = calloc(1, sizeof(Node));
     // node->kind = ND_RETURN;
     // node->lhs = expr();
