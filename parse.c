@@ -96,6 +96,7 @@ Token *tokenize(char *p) {
       p += 2;
       continue;
     } else if (
+      *p == ';' ||
       *p == '<' ||
       *p == '>' ||
       *p == '+' ||
@@ -154,6 +155,28 @@ Node *new_node_ident(int offset) {
 
   node->kind = ND_LVAR;
   node->offset = offset;
+
+  return node;
+}
+
+Node *code[100];
+
+// program = stmt*
+Node *program() {
+  int i = 0;
+
+  while (!at_eof()) {
+    code[i++] = stmt();
+  }
+
+  code[i] = NULL; // terminal?
+}
+
+// stmt = expr ";"
+Node *stmt() {
+  Node *node = expr();
+
+  expect(";");
 
   return node;
 }
