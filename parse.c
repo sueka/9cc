@@ -330,6 +330,9 @@ Node *stmt() {
     while (!consume("}")) {
       node->stmts[i++] = stmt();
     }
+
+    // `stmts` は固定長 (`*Node[100]`) なので、ブロックが丁度100個の文からなる場合、 `gen()` が `stmts` の範囲を超えてしまう。終端に `NULL をセットすることでこれを明示的に回避できる。
+    node->stmts[i] = NULL;
   } else {
     node = expr();
     expect(";");
