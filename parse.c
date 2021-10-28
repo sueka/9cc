@@ -471,6 +471,7 @@ Node *primary() {
       locals = lvar;
     }
 
+    // `if (!lvar)` なら関数呼び出しはできないが、パーザーとしては関係無いはず……
     if (consume("(")) {
       expect(")");
 
