@@ -11,6 +11,9 @@ void gen_lval(Node *node) {
   printf("  push rax\n");
 }
 
+// 制御構造用の通し番号
+int c;
+
 void gen(Node *node) {
   switch (node->kind) {
     case ND_NUM:
@@ -41,6 +44,51 @@ void gen(Node *node) {
     printf("  mov rsp, rbp\n");
     printf("  pop rbp\n");
     printf("  ret\n");
+    return;
+    case ND_IF:
+    gen(node->cond); // スタックトップに結果が入っているはず
+
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+
+    if (!node->otherwise) { // if
+      printf("  je  .Lend%d\n", c);
+      gen(node->then);
+    } else { // if-else
+      printf("  je  .Lelse%d\n", c);
+      gen(node->then);
+      printf("  jmp .Lend%d\n", c);
+      printf(".Lelse%d:\n", c);
+      gen(node->otherwise);
+    }
+
+    printf(".Lend%d:\n", c);
+
+    ++c;
+    return;
+    case ND_WHILE:
+    printf(".Lbegin%d:\n", c);
+    gen(node->cond);
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je  .Lend%d\n", c);
+    gen(node->body);
+    printf("  jmp .Lbegin%d\n", c);
+    printf(".Lend%d:\n", c);
+    ++c;
+    return;
+    case ND_FOR:
+    gen(node->init);
+    printf(".Lbegin%d:\n", c);
+    gen(node->cond);
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je  .Lend%d\n", c);
+    gen(node->body);
+    gen(node->iter);
+    printf("  jmp .Lbegin%d\n", c);
+    printf(".Lend%d:\n", c);
+    ++c;
     return;
   }
 
