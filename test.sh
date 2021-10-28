@@ -44,5 +44,6 @@ assert 0 'if (0) 2;'
 assert 0 'a = 5; while (a) a = a - 1; a;'
 assert 55 'sum; for (i = 1; i <= 10; i = i + 1) sum = sum + i; sum;'
 assert 55 'sum; i = 1; while (i <= 10) { sum = sum + i; i = i + 1; } sum;'
+assert 0 'foo();'
 
 echo OK
