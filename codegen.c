@@ -112,6 +112,11 @@ void gen(Node *node) {
       // TODO: RSP を16の倍数にアラインする
 
       printf("  call %.*s\n", node->len, node->name);
+
+      // call された関数の戻り値は rax と rdx （あれば）に入っている。現在のバージョンの 9cc では式の評価結果はスタックトップにあるので、 rax をスタックに push する。
+      // FIXME: スタックではまずいことがあるかも
+      printf("  push rax\n");
+
       return;
     }
   }
