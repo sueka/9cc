@@ -158,6 +158,7 @@ Token *tokenize(char *p) {
       p += 2;
       continue;
     } else if (
+      *p == ',' ||
       *p == ';' ||
       *p == '{' ||
       *p == '}' ||
