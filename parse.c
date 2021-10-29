@@ -18,6 +18,15 @@ bool consume(char *op) {
   }
 }
 
+// 次のトークンが期待している記号の場合は真を、それ以外の場合は偽を返す。
+bool next(char *op) {
+  return (
+    token->kind == TK_RESERVED &&
+    strlen(op) == token->len &&
+    !memcmp(token->str, op, token->len)
+  );
+}
+
 // 次のトークンが `return` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
 bool consume_return() {
   if (token->kind == TK_RETURN) {
@@ -278,12 +287,12 @@ Node *program() {
   code[i] = NULL; // terminal?
 }
 
-// stmt = expr ";"
-//      | "{" stmt* "}"
-//      | "if" "(" expr ")" stmt ("else" stmt)?
-//      | "while" "(" expr ")" stmt
-//      | "for" "(" expr? ";" expr? ";" expr? ")" stmt
-//      | "return" expr ";"
+// stmt  = expr ";"
+//       | block
+//       | "if" "(" expr ")" stmt ("else" stmt)?
+//       | "while" "(" expr ")" stmt
+//       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
+//       | "return" expr ";"
 Node *stmt() {
   Node *node;
 
@@ -322,22 +331,31 @@ Node *stmt() {
     // node->lhs = expr();
     node = new_node(ND_RETURN, expr(), NULL);
     expect(";");
-  } else if (consume("{")) {
-    int i = 0;
-
-    node = calloc(1, sizeof(Node));
-    node->kind = ND_BLOCK;
-
-    while (!consume("}")) {
-      node->stmts[i++] = stmt();
-    }
-
-    // `stmts` は固定長 (`*Node[100]`) なので、ブロックが丁度100個の文からなる場合、 `gen()` が `stmts` の範囲を超えてしまう。終端に `NULL をセットすることでこれを明示的に回避できる。
-    node->stmts[i] = NULL;
+  } else if (next("{")) {
+    node = block();
   } else {
     node = expr();
     expect(";");
   }
+
+  return node;
+}
+
+// block = "{" stmt* "}"
+Node *block() {
+  expect("{");
+
+  int i = 0;
+
+  Node *node = calloc(1, sizeof(Node));
+  node->kind = ND_BLOCK;
+
+  while (!consume("}")) {
+    node->stmts[i++] = stmt();
+  }
+
+  // `stmts` は固定長 (`*Node[100]`) なので、ブロックが丁度100個の文からなる場合、 `gen()` が `stmts` の範囲を超えてしまう。終端に `NULL をセットすることでこれを明示的に回避できる。
+  node->stmts[i] = NULL;
 
   return node;
 }

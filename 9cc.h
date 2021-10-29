@@ -122,6 +122,7 @@ extern Node *code[100];
 
 Node *program();
 Node *stmt();
+Node *block();
 Node *expr();
 Node *assign();
 Node *equality();
