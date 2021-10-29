@@ -14,6 +14,8 @@ void gen_lval(Node *node) {
 // 制御構造用の通し番号
 int c = 0;
 
+char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
 void gen(Node *node) {
   switch (node->kind) {
     case ND_NUM:
@@ -96,9 +98,22 @@ void gen(Node *node) {
       printf("  pop rax\n");
     }
     return;
-    case ND_FCALL:
-    printf("  call %.*s\n", node->len, node->name);
-    return;
+    case ND_FCALL: {
+      int i = 0;
+
+      for (i = 0; node->args[i]; ++i) {
+        gen(node->args[i]);
+      }
+
+      for (int j = i - 1; j >= 0; --j) {
+        printf("  pop %s\n", regs[j]);
+      }
+
+      // TODO: RSP を16の倍数にアラインする
+
+      printf("  call %.*s\n", node->len, node->name);
+      return;
+    }
   }
 
   gen(node->lhs);
