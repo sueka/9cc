@@ -47,5 +47,6 @@ assert 55 'sum; for (i = 1; i <= 10; i = i + 1) sum = sum + i; sum;'
 assert 55 'sum; i = 1; while (i <= 10) { sum = sum + i; i = i + 1; } sum;'
 assert 0 'foo();'
 assert 0 'bar(3, 4);'
+assert 21 'baz(1, 2, 3, 4, 5, 6);'
 
 echo OK
