@@ -479,6 +479,7 @@ Node *primary() {
 
       node->kind = ND_FCALL;
       node->name = tok->str;
+      node->len = tok->len;
 
       return node;
     } else {
