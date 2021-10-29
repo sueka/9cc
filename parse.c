@@ -438,8 +438,9 @@ Node *unary() {
 }
 
 // primary = "(" expr ")"
-//         | ident ("(" ")")?
+//         | ident fargs?
 //         | num
+// fargs   = "(" (expr ("," expr)*)? ")"
 Node *primary() {
   // 次のトークンが "(" なら "(" expr ")"
   if (consume("(")) {
@@ -473,13 +474,23 @@ Node *primary() {
 
     // `if (!lvar)` なら関数呼び出しはできないが、パーザーとしては関係無いはず……
     if (consume("(")) {
-      expect(")");
-
       Node *node = calloc(1, sizeof(Node));
 
       node->kind = ND_FCALL;
       node->name = tok->str;
       node->len = tok->len;
+
+      int i = 0;
+
+      if (!consume(")")) {
+        node->args[i++] = expr();
+
+        while (consume(",")) {
+          node->args[i++] = expr();
+        }
+
+        expect(")");
+      }
 
       return node;
     } else {

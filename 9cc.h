@@ -97,6 +97,7 @@ struct Node {
   // kind が ND_FCALL の場合のみ使う
   char *name;
   int len;
+  Node *args[6];
 
   // kind が ND_BLOCK の場合のみ使う
   Node *stmts[20];
