@@ -77,6 +77,7 @@ typedef enum {
   ND_DIV,    // /
   ND_NUM,    // 整数
   ND_LVAR,   // ローカル変数
+  ND_FDEFN,  // 関数定義
   ND_FCALL,  // 関数呼び出し
 } NodeKind;
 
@@ -94,10 +95,10 @@ struct Node {
   // kind が ND_LVAR の場合のみ使う
   int offset;
 
-  // kind が ND_FCALL の場合のみ使う
+  // kind が ND_FDEFN/ND_FCALL の場合のみ使う
   char *name;
   int len;
-  Node *args[6];
+  Node *args[6]; // params/args
 
   // kind が ND_BLOCK の場合のみ使う
   Node *stmts[20];
@@ -121,6 +122,7 @@ Node *new_node_num(int val);
 extern Node *code[100];
 
 Node *program();
+Node *funcdefn();
 Node *stmt();
 Node *block();
 Node *expr();

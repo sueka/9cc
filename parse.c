@@ -276,15 +276,45 @@ Node *new_node_ident(int offset) {
 
 Node *code[100];
 
-// program = stmt*
+// program = function*
 Node *program() {
   int i = 0;
 
   while (!at_eof()) {
-    code[i++] = stmt();
+    code[i++] = funcdefn();
   }
 
   code[i] = NULL; // terminal?
+}
+
+// funcdefn = ident fparams block
+// fparams  = "(" (expr ("," expr)*)? ")"
+Node *funcdefn() {
+  Node *node = calloc(1, sizeof(Node));
+  node->kind = ND_FDEFN;
+
+  Token *tok = consume_ident();
+  node->name = tok->str;
+  node->len = tok->len;
+
+  // fparams
+  consume("(");
+
+  int i = 0;
+
+  if (!consume(")")) {
+    node->args[i++] = expr();
+
+    while (consume(",")) {
+      node->args[i++] = expr();
+    }
+
+    expect(")");
+  }
+
+  node->body = block();
+
+  return node;
 }
 
 // stmt  = expr ";"
