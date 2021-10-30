@@ -119,6 +119,9 @@ void gen(Node *node) {
 
       return;
     }
+    case ND_FDEFN:
+    gen(node->body);
+    return;
   }
 
   gen(node->lhs);
