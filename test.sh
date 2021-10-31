@@ -49,5 +49,12 @@ assert 0 'main() { return foo(); }'
 assert 0 'main() { return bar(3, 4); }'
 assert 21 'main() { return baz(1, 2, 3, 4, 5, 6); }'
 assert 12 'main() { return mul(3, 4); } mul(x, y) { return x * y; }'
+assert 0 'main() { return fib(0); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
+assert 1 'main() { return fib(1); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
+assert 1 'main() { return fib(2); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
+assert 2 'main() { return fib(3); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
+assert 3 'main() { return fib(4); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
+assert 5 'main() { return fib(5); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
+assert 8 'main() { return fib(6); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
 
 echo OK
