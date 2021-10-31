@@ -506,6 +506,7 @@ Node *primary() {
   if (tok) {
     LVar *lvar = find_lvar(tok);
 
+    // FIXME: 関数適用の場合、ローカル変数に入れてはいけない気がする。
     if (!lvar) {
       lvar = calloc(1, sizeof(LVar));
       lvar->next = locals;
