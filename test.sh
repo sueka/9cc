@@ -48,5 +48,6 @@ assert 55 'main() { sum; i = 1; while (i <= 10) { sum = sum + i; i = i + 1; } re
 assert 0 'main() { return foo(); }'
 assert 0 'main() { return bar(3, 4); }'
 assert 21 'main() { return baz(1, 2, 3, 4, 5, 6); }'
+assert 12 'main() { return mul(3, 4); } mul(x, y) { return x * y; }'
 
 echo OK

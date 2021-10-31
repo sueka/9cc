@@ -95,6 +95,19 @@ Token *consume_ident() {
   }
 }
 
+// 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。それ以外の場合はエラーを報告する。
+Token *expect_ident() {
+  if (token->kind != TK_IDENT) {
+    error_at(token->str, "識別子ではありません。");
+  }
+
+  Token *result = token;
+
+  token = token->next;
+
+  return result;
+}
+
 // 次のトークンが期待している記号の場合はトークンを1つ読み進める。それ以外の場合はエラーを報告する。
 void expect(char *op) {
   if (
@@ -303,11 +316,9 @@ Node *funcdefn() {
   int i = 0;
 
   if (!consume(")")) {
-    node->args[i++] = expr();
-
-    while (consume(",")) {
-      node->args[i++] = expr();
-    }
+    do {
+      node->args[i++] = primary();
+    } while (consume(","));
 
     expect(")");
   }

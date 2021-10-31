@@ -129,6 +129,18 @@ void gen(Node *node) {
     printf("  mov rbp, rsp\n");
     printf("  sub rsp, 208\n");
 
+    int i;
+
+    for (i = 0; node->args[i]; ++i) {
+      gen_lval(node->args[i]);
+    }
+
+    // RDI, RSI, RDX, RCX, R8, R9 に実引数、スタックトップに上（成長元）から順に仮引数のアドレスがあるので、仮引数のアドレスを pop し、仮引数のアドレスにある値を実引数で置き換える。
+    for (int j = i - 1; j >= 0; --j) {
+      printf("  pop rax\n");
+      printf("  mov [rax], %s\n", regs[j]);
+    }
+
     gen(node->body);
 
     // 式の評価結果としてスタックに1つの値が残っているはずなので、スタックが溢れないように pop しておく
