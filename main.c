@@ -49,26 +49,7 @@ int main(int argc, char **argv) {
 
   // 先頭の式から順に、抽象構文木を下りながらコード生成
   for (int i = 0; code[i]; ++i) {
-    // FIXME: ラベルとプロローグ/エピローグは関数定義のコードとして生成すべきな気がする。
-    printf("%.*s:\n", code[i]->len, code[i]->name);
-
-    // TODO: 実引数の値をスタックに書き出す
-    // プロローグ
-    // 変数26個分の領域を確保する
-    printf("  push rbp\n");
-    printf("  mov rbp, rsp\n");
-    printf("  sub rsp, 208\n");
-
     gen(code[i]);
-
-    // 式の評価結果としてスタックに1つの値が残っているはずなので、スタックが溢れないように pop しておく
-    printf("  pop rax\n");
-
-    // エピローグ
-    // 最後の式の結果が RAX に残っているので、それを返り値とする
-    printf("  mov rsp, rbp\n");
-    printf("  pop rbp\n");
-    printf("  ret\n");
   }
 
   return 0;
