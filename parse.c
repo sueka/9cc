@@ -529,6 +529,8 @@ Node *primary() {
 
     // FIXME: 関数適用の場合、ローカル変数に入れてはいけない気がする。
     if (!lvar) {
+      error_at(tok->str, "変数が定義されていません。");
+
       lvar = calloc(1, sizeof(LVar));
       lvar->next = locals;
       lvar->name = tok->str;
@@ -543,7 +545,6 @@ Node *primary() {
       locals = lvar;
     }
 
-    // `if (!lvar)` なら関数呼び出しはできないが、パーザーとしては関係無いはず……
     if (consume("(")) {
       Node *node = calloc(1, sizeof(Node));
 
