@@ -82,6 +82,17 @@ bool consume_for() {
   return false;
 }
 
+// 次のトークンが `return` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+bool consume_int() {
+  if (token->kind == TK_INT) {
+    token = token->next;
+
+    return true;
+  }
+
+  return false;
+}
+
 // 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。
 Token *consume_ident() {
   if (token->kind == TK_IDENT) {
@@ -339,6 +350,7 @@ Node *funcdefn() {
 //       | "while" "(" expr ")" stmt
 //       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
 //       | "return" expr ";"
+//       | "int" ident ";"
 Node *stmt() {
   Node *node;
 
@@ -376,6 +388,32 @@ Node *stmt() {
     // node->kind = ND_RETURN;
     // node->lhs = expr();
     node = new_node(ND_RETURN, expr(), NULL);
+    expect(";");
+  } else if (consume_int()) {
+    node = calloc(1, sizeof(Node));
+    node->kind = ND_DEF;
+
+    Token *tok = expect_ident();
+    LVar *lvar = find_lvar(tok);
+
+    if (lvar) {
+      error_at(tok->str, "変数はすでに定義されています。");
+    }
+
+    lvar = calloc(1, sizeof(LVar));
+    lvar->next = locals;
+    lvar->name = tok->str;
+    lvar->len = tok->len;
+
+    if (locals) {
+      lvar->offset = locals->offset + 8;
+    } else {
+      lvar->offset = 0; // 8 かも
+    }
+
+    locals = lvar;
+    node->offset = lvar->offset;
+
     expect(";");
   } else if (next("{")) {
     node = block();
@@ -531,24 +569,6 @@ Node *primary() {
   if (tok) {
     LVar *lvar = find_lvar(tok);
 
-    // FIXME: 関数適用の場合、ローカル変数に入れてはいけない気がする。
-    if (!lvar) {
-      error_at(tok->str, "変数が定義されていません。");
-
-      lvar = calloc(1, sizeof(LVar));
-      lvar->next = locals;
-      lvar->name = tok->str;
-      lvar->len = tok->len;
-
-      if (locals) {
-        lvar->offset = locals->offset + 8;
-      } else {
-        lvar->offset = 8; // 8 かも
-      }
-
-      locals = lvar;
-    }
-
     if (consume("(")) {
       Node *node = calloc(1, sizeof(Node));
 
@@ -569,6 +589,8 @@ Node *primary() {
       }
 
       return node;
+    } else if (!lvar) {
+      error_at(tok->str, "変数が定義されていません。");
     } else {
       return new_node_ident(lvar->offset);
     }

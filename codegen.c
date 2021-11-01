@@ -21,6 +21,9 @@ void gen(Node *node) {
     case ND_NUM:
     printf("  push %d\n", node->val);
     return;
+    case ND_DEF:
+    // noop; プロローグで変数26個分の領域を固定で確保しているため、ここでは何もしない。
+    return;
     case ND_LVAR:
     gen_lval(node);
 
