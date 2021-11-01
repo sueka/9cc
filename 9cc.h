@@ -13,6 +13,7 @@ typedef enum {
   TK_ELSE,     // else キーワード
   TK_WHILE,    // while キーワード
   TK_FOR,      // for キーワード
+  TK_INT,      // int; TODO: 将来的には識別子になるはず……
   TK_IDENT,    // 識別子
   TK_NUM,      // 整数
   TK_EOF,      // 入力の終わり
@@ -78,6 +79,7 @@ typedef enum {
   ND_MUL,    // *
   ND_DIV,    // /
   ND_NUM,    // 整数
+  ND_DEF,    // 変数定義
   ND_LVAR,   // ローカル変数
   ND_FDEFN,  // 関数定義
   ND_FCALL,  // 関数呼び出し
@@ -94,7 +96,8 @@ struct Node {
   // kind が ND_NUM の場合のみ使う
   int val;
 
-  // kind が ND_LVAR の場合のみ使う
+  // FIXME: ノードの時点では offset にせずに名前を保持した方が良いような気がする。
+  // kind が ND_DEF/ND_LVAR の場合のみ使う
   int offset;
 
   // kind が ND_FDEFN/ND_FCALL の場合のみ使う
