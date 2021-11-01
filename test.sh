@@ -56,5 +56,7 @@ assert 2 'main() { return fib(3); } fib(n) { if (n == 0) return 0; if (n == 1) r
 assert 3 'main() { return fib(4); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
 assert 5 'main() { return fib(5); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
 assert 8 'main() { return fib(6); } fib(n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
+assert 3 'main() { x = 3; y = &x; return *y; }'
+assert 3 'main() { x = 3; y = 5; z = &y + 8; return *z; }'
 
 echo OK
