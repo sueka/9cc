@@ -218,6 +218,10 @@ Token *tokenize(char *p) {
       cur = new_token(TK_FOR, cur, p, 3);
       p += 3;
       continue;
+    } else if (strncmp(p, "int", 3) == 0 && !is_alnum(p[3])) {
+      cur = new_token(TK_INT, cur, p, 3);
+      p += 3;
+      continue;
     } else if ('a' <= *p && *p <= 'z') {
       // `if ('a' <= *p && *p <= 'z')` なので len >= 1 ではある
       cur = new_token(TK_IDENT, cur, p, 0);
