@@ -317,7 +317,7 @@ Node *program() {
 }
 
 // funcdefn = ident fparams block
-// fparams  = "(" (expr ("," expr)*)? ")"
+// fparams  = "(" (primary ("," primary)*)? ")"
 Node *funcdefn() {
   Node *node = calloc(1, sizeof(Node));
   node->kind = ND_FDEFN;
