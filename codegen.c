@@ -122,7 +122,6 @@ void gen(Node *node) {
     case ND_FDEFN:
     printf("%.*s:\n", node->len, node->name);
 
-    // TODO: 実引数の値をスタックに書き出す
     // プロローグ
     // 変数26個分の領域を確保する
     printf("  push rbp\n");
