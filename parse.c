@@ -190,6 +190,7 @@ Token *tokenize(char *p) {
       *p == '+' ||
       *p == '-' ||
       *p == '*' ||
+      *p == '&' ||
       *p == '/' ||
       *p == '(' ||
       *p == ')'
@@ -485,6 +486,7 @@ Node *mul() {
 }
 
 // unary = ("+" | "-")? primary
+//       | ("*" | "&") unary
 Node *unary() {
   if (consume("+")) {
     return primary();
@@ -492,6 +494,14 @@ Node *unary() {
 
   if (consume("-")) {
     return new_node(ND_SUB, new_node_num(0), primary());
+  }
+
+  if (consume("*")) {
+    return new_node(ND_DEREF, unary(), NULL);
+  }
+
+  if (consume("&")) {
+    return new_node(ND_ADDR, unary(), NULL);
   }
 
   return primary();
@@ -527,7 +537,7 @@ Node *primary() {
       if (locals) {
         lvar->offset = locals->offset + 8;
       } else {
-        lvar->offset = 0; // 8 かも
+        lvar->offset = 8; // 8 かも
       }
 
       locals = lvar;

@@ -73,6 +73,8 @@ typedef enum {
   ND_LTE,    // <=
   ND_ADD,    // +
   ND_SUB,    // -
+  ND_ADDR,   // &
+  ND_DEREF,  // *
   ND_MUL,    // *
   ND_DIV,    // /
   ND_NUM,    // 整数
