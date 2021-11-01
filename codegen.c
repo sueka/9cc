@@ -1,7 +1,7 @@
 #include "9cc.h"
 
 void gen_lval(Node *node) {
-  if (node->kind != ND_LVAR) {
+  if (node->kind != ND_LVAR && node->kind != ND_DEF) {
     error_at(token->str, "代入の左辺値が変数ではありません。");
   }
 
@@ -145,6 +145,7 @@ void gen(Node *node) {
       int i;
 
       for (i = 0; node->args[i]; ++i) {
+        // printf("%d\n", node->args[i]->offset);
         gen_lval(node->args[i]);
       }
 

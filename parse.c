@@ -27,6 +27,11 @@ bool next(char *op) {
   );
 }
 
+// 次のトークンが `int` の場合は真を、それ以外の場合は偽を返す。
+bool next_int() {
+  return token->kind == TK_INT;
+}
+
 // 次のトークンが `return` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
 bool consume_return() {
   if (token->kind == TK_RETURN) {
@@ -104,6 +109,18 @@ Token *consume_ident() {
   } else {
     return NULL;
   }
+}
+
+// 次のトークンが `int` の場合はトークンを1つ読み進めてそのトークンを返す。それ以外の場合はエラーを報告する。
+Token *expect_int() {
+  if (token->kind != TK_INT) {
+    error_at(token->str, "`int` ではありません。");
+  }
+
+  Token *result = token;
+  token = token->next;
+
+  return result;
 }
 
 // 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。それ以外の場合はエラーを報告する。
@@ -317,7 +334,7 @@ Node *program() {
 }
 
 // funcdefn = ident fparams block
-// fparams  = "(" (primary ("," primary)*)? ")"
+// fparams  = "(" (ldef ("," ldef)*)? ")"
 Node *funcdefn() {
   Node *node = calloc(1, sizeof(Node));
   node->kind = ND_FDEFN;
@@ -333,7 +350,7 @@ Node *funcdefn() {
 
   if (!consume(")")) {
     do {
-      node->args[i++] = primary();
+      node->args[i++] = ldef();
     } while (consume(","));
 
     expect(")");
@@ -350,7 +367,7 @@ Node *funcdefn() {
 //       | "while" "(" expr ")" stmt
 //       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
 //       | "return" expr ";"
-//       | "int" ident ";"
+//       | ldef ";"
 Node *stmt() {
   Node *node;
 
@@ -389,31 +406,8 @@ Node *stmt() {
     // node->lhs = expr();
     node = new_node(ND_RETURN, expr(), NULL);
     expect(";");
-  } else if (consume_int()) {
-    node = calloc(1, sizeof(Node));
-    node->kind = ND_DEF;
-
-    Token *tok = expect_ident();
-    LVar *lvar = find_lvar(tok);
-
-    if (lvar) {
-      error_at(tok->str, "変数はすでに定義されています。");
-    }
-
-    lvar = calloc(1, sizeof(LVar));
-    lvar->next = locals;
-    lvar->name = tok->str;
-    lvar->len = tok->len;
-
-    if (locals) {
-      lvar->offset = locals->offset + 8;
-    } else {
-      lvar->offset = 0; // 8 かも
-    }
-
-    locals = lvar;
-    node->offset = lvar->offset;
-
+  } else if (next_int()) {
+    node = ldef();
     expect(";");
   } else if (next("{")) {
     node = block();
@@ -447,6 +441,37 @@ Node *block() {
 // expr = assign
 Node *expr() {
   Node *node = assign();
+
+  return node;
+}
+
+// ldef = "int" ident
+Node *ldef() {
+  expect_int();
+
+  Node *node = calloc(1, sizeof(Node));
+  node->kind = ND_DEF;
+
+  Token *tok = expect_ident();
+  LVar *lvar = find_lvar(tok);
+
+  if (lvar) {
+    error_at(tok->str, "変数はすでに定義されています。");
+  }
+
+  lvar = calloc(1, sizeof(LVar));
+  lvar->next = locals;
+  lvar->name = tok->str;
+  lvar->len = tok->len;
+
+  if (locals) {
+    lvar->offset = locals->offset + 8;
+  } else {
+    lvar->offset = 8;
+  }
+
+  locals = lvar;
+  node->offset = lvar->offset;
 
   return node;
 }

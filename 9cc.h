@@ -131,6 +131,7 @@ Node *funcdefn();
 Node *stmt();
 Node *block();
 Node *expr();
+Node *ldef();
 Node *assign();
 Node *equality();
 Node *relational();
