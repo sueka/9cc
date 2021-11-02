@@ -54,11 +54,13 @@ int expect_number();
 
 bool at_eof();
 
+// 入力文字列 p をトークナイズしてそれを返す。
+Token *tokenize(char *p);
+
 // 新しいトークンを作成して cur に繋げる。
 Token *new_token(TokenKind kind, Token *cur, char *str, int len);
 
-// 入力文字列 p をトークナイズしてそれを返す。
-Token *tokenize(char *p);
+int is_alnum(char c);
 
 // 抽象構文木のノードの種類
 typedef enum {
