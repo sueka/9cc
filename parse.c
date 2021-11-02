@@ -333,11 +333,13 @@ Node *program() {
   code[i] = NULL; // terminal?
 }
 
-// funcdefn = ident fparams block
+// funcdefn = "int" ident fparams block
 // fparams  = "(" (ldef ("," ldef)*)? ")"
 Node *funcdefn() {
   Node *node = calloc(1, sizeof(Node));
   node->kind = ND_FDEFN;
+
+  expect_int();
 
   Token *tok = consume_ident();
   node->name = tok->str;
