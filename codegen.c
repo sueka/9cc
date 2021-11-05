@@ -33,7 +33,13 @@ void gen(Node *node) {
       printf("  push rax\n");
       return;
     case ND_ASSIGN:
-      gen_lval(node->lhs);
+      // 左辺がデリファレンスされている場合、デリファレンスされている値はアドレスのはずなので、右辺値としてコンパイルすれば代入先が得られる。
+      if (node->lhs->kind == ND_DEREF) {
+        gen(node->lhs->lhs);
+      } else {
+        gen_lval(node->lhs);
+      }
+
       gen(node->rhs);
 
       // スタックトップに代入する値、次に左辺のアドレスがあるので、左辺のアドレスにある値をスタックトップの値で置き換える。代入値をスタックに戻す。
