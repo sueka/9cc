@@ -58,5 +58,6 @@ assert 5 'int main() { return fib(5); } int fib(int n) { if (n == 0) return 0; i
 assert 8 'int main() { return fib(6); } int fib(int n) { if (n == 0) return 0; if (n == 1) return 1; return fib(n - 2) + fib(n - 1); }'
 assert 3 'int main() { int x; int y; x = 3; y = &x; return *y; }'
 assert 3 'int main() { int x; int y; int z; x = 3; y = 5; z = &y + 8; return *z; }'
+assert 3 'int main() { int x; int *y; y = &x; *y = 3; return x; }'
 
 echo OK
