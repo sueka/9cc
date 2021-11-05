@@ -209,7 +209,7 @@ Node *new_node_ident(int offset) {
 
 Node *code[100];
 
-// program = function*
+// program = funcdefn*
 Node *program() {
   int i = 0;
 
