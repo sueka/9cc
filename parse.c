@@ -334,12 +334,13 @@ Node *expr() {
   return node;
 }
 
-// ldef = "int" ident
+// ldef = typename ident
 Node *ldef() {
-  expect_int();
-
   Node *node = calloc(1, sizeof(Node));
   node->kind = ND_DEF;
+
+  Type *ty = typename();
+  node->ty = ty;
 
   Token *tok = expect_ident();
   LVar *lvar = find_lvar(tok);
@@ -363,6 +364,25 @@ Node *ldef() {
   node->offset = lvar->offset;
 
   return node;
+}
+
+// typename = "int" "*"*
+Type *typename(Type *ptr_to) {
+  Type *basety = calloc(1, sizeof(Type));
+  basety->ty = INT;
+
+  expect_int();
+
+  Type *ty = basety;
+
+  while (consume("*")) {
+    Type *ptr = calloc(1, sizeof(Type));
+    ptr->ty = PTR;
+    ptr->ptr_to = ty;
+    ty = ptr;
+  }
+
+  return ty;
 }
 
 // assign = equality ("=" assign)?

@@ -88,6 +88,7 @@ typedef enum {
 } NodeKind;
 
 typedef struct Node Node;
+typedef struct Type Type;
 
 // 抽象構文木のノードの型
 struct Node {
@@ -101,6 +102,8 @@ struct Node {
   // FIXME: ノードの時点では offset にせずに名前を保持した方が良いような気がする。
   // kind が ND_DEF/ND_LVAR の場合のみ使う
   int offset;
+
+  Type *ty; // kind が ND_DEF の場合のみ使う
 
   // kind が ND_FDEFN/ND_FCALL の場合のみ使う
   char *name;
@@ -122,6 +125,16 @@ struct Node {
   Node *iter;
 };
 
+typedef enum {
+  INT,
+  PTR,
+} TypeKind;
+
+struct Type {
+  TypeKind ty;
+  struct Type *ptr_to; // ty が PTR の場合のみ使う
+};
+
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs);
 
 Node *new_node_num(int val);
@@ -134,6 +147,7 @@ Node *stmt();
 Node *block();
 Node *expr();
 Node *ldef();
+Type *typename();
 Node *assign();
 Node *equality();
 Node *relational();
