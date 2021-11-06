@@ -5,8 +5,8 @@ assert() {
 	input="$2"
 
 	./9cc "$input" >tmp.s
-	cc -c foo.c -o foo.o
-	cc -o tmp tmp.s foo.o
+	cc -c test_helpers.c -o test_helpers.o
+	cc -o tmp tmp.s test_helpers.o
 	./tmp
 	actual="$?"
 
