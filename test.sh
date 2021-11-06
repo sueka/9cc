@@ -32,7 +32,7 @@ assert 0 'int main() { return 1+2*3<=1+2+3; }'
 assert 1 'int main() { return 3>2; }'
 assert 0 'int main() { return 1<1; }'
 assert 0 'int main() { return 1>1; }'
-assert 0 'int main() { return 3>2>1; }' # 3>2 が 1 なので 1>1 は 0
+assert 0 'int main() { return 3>2>1; }' # 3>2 ă 1 ăŞăŽă§ 1>1 ăŻ 0
 assert 3 'int main() { int a; return a = 3; }'
 assert 14 'int main() { int a; int b; a = 3; b = 5 * 6 - 8; return a + b / 2; }'
 assert 5 'int main() { return 5; }'

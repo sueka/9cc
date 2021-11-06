@@ -104,7 +104,7 @@ struct Node {
   // kind が ND_DEF/ND_LVAR の場合のみ使う
   int offset;
 
-  Type *ty; // kind が ND_DEF/ND_LVAR の場合のみ使う
+  Type *ty; // kind が ND_DEF/ND_ASSIGN/ND_EQ/ND_NE/ND_LT/ND_LTE/ND_ADD/ND_SUB/ND_ADDR/ND_DEREF/ND_MUL/ND_DIV/ND_NUM/ND_LVAR/ND_FCALL の場合のみ使う; ND_DEF は意味が異なることに注意
 
   // kind が ND_FDEFN/ND_FCALL の場合のみ使う
   char *name;
@@ -173,6 +173,6 @@ extern LVar *locals;
 
 void gen(Node *node);
 
-int size(Type *ty);
+int _sizeof(Type *ty);
 
 // int main(int argc, char **argv);

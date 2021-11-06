@@ -197,6 +197,38 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs) {
   node->lhs = lhs;
   node->rhs = rhs;
 
+  switch (kind) {
+    case ND_ASSIGN:
+      node->ty = rhs->ty;
+      break;
+    case ND_EQ:
+    case ND_NE:
+    case ND_LT:
+    case ND_LTE:
+      node->ty = calloc(1, sizeof(Type));
+      node->ty->ty = INT;
+      break;
+    case ND_ADD:
+    case ND_SUB:
+    case ND_MUL:
+    case ND_DIV:
+      node->ty = lhs->ty;
+      break;
+    case ND_DEREF:
+      if (lhs->ty->ty == PTR) {
+        node->ty = lhs->ty->ptr_to;
+      } else {
+        node->ty = calloc(1, sizeof(Type));
+        node->ty->ty = INT;
+      }
+      break;
+    case ND_ADDR:
+      node->ty = calloc(1, sizeof(Type));
+      node->ty->ty = PTR;
+      node->ty->ptr_to = lhs->ty;
+      break;
+  }
+
   return node;
 }
 
@@ -205,6 +237,8 @@ Node *new_node_num(int val) {
 
   node->kind = ND_NUM;
   node->val = val;
+  node->ty = calloc(1, sizeof(Type));
+  node->ty->ty = INT;
 
   return node;
 }
@@ -479,7 +513,9 @@ Node *mul() {
 //       | ("*" | "&") unary
 Node *unary() {
   if (consume_sizeof()) {
-    return unary();
+    Node *node = unary();
+
+    return new_node_num(_sizeof(node->ty));
   }
 
   if (consume("+")) {
@@ -527,6 +563,10 @@ Node *primary() {
       node->kind = ND_FCALL;
       node->name = tok->str;
       node->len = tok->len;
+
+      // NOTE: 現時点では関数の戻り値の型は捨てているので、とりあえず INT にしておく。
+      node->ty = calloc(1, sizeof(Type));
+      node->ty->ty = INT;
 
       int i = 0;
 
