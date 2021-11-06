@@ -367,7 +367,7 @@ Node *ldef() {
 }
 
 // typename = "int" "*"*
-Type *typename(Type *ptr_to) {
+Type *typename() {
   Type *basety = calloc(1, sizeof(Type));
   basety->ty = INT;
 
