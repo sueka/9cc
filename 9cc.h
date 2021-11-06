@@ -103,7 +103,7 @@ struct Node {
   // kind が ND_DEF/ND_LVAR の場合のみ使う
   int offset;
 
-  Type *ty; // kind が ND_DEF の場合のみ使う
+  Type *ty; // kind が ND_DEF/ND_LVAR の場合のみ使う
 
   // kind が ND_FDEFN/ND_FCALL の場合のみ使う
   char *name;
@@ -164,6 +164,7 @@ struct LVar {
   char *name; // 変数の名前
   int len;    // 名前の長さ
   int offset; // RBP からのオフセット
+  Type *ty;   // 変数のデータ型
 };
 
 // ローカル変数

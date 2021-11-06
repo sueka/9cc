@@ -198,11 +198,12 @@ Node *new_node_num(int val) {
   return node;
 }
 
-Node *new_node_ident(int offset) {
+Node *new_node_ident(int offset, Type *ty) {
   Node *node = calloc(1, sizeof(Node));
 
   node->kind = ND_LVAR;
   node->offset = offset;
+  node->ty = ty;
 
   return node;
 }
@@ -353,6 +354,7 @@ Node *ldef() {
   lvar->next = locals;
   lvar->name = tok->str;
   lvar->len = tok->len;
+  lvar->ty = ty;
 
   if (locals) {
     lvar->offset = locals->offset + 8;
@@ -526,7 +528,7 @@ Node *primary() {
     } else if (!lvar) {
       error_at(tok->str, "変数が定義されていません。");
     } else {
-      return new_node_ident(lvar->offset);
+      return new_node_ident(lvar->offset, lvar->ty);
     }
   }
 
