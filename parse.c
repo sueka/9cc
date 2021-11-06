@@ -98,6 +98,17 @@ bool consume_int() {
   return false;
 }
 
+// 次のトークンが `sizeof` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+bool consume_sizeof() {
+  if (token->kind == TK_SIZEOF) {
+    token = token->next;
+
+    return true;
+  }
+
+  return false;
+}
+
 // 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。
 Token *consume_ident() {
   if (token->kind == TK_IDENT) {
@@ -463,9 +474,14 @@ Node *mul() {
   }
 }
 
-// unary = ("+" | "-")? primary
+// unary = "sizeof" unary
+//       | ("+" | "-")? primary
 //       | ("*" | "&") unary
 Node *unary() {
+  if (consume_sizeof()) {
+    return unary();
+  }
+
   if (consume("+")) {
     return primary();
   }
