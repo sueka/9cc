@@ -14,6 +14,7 @@ typedef enum {
   TK_WHILE,    // while キーワード
   TK_FOR,      // for キーワード
   TK_INT,      // int; TODO: 将来的には識別子になるはず……
+  TK_SIZEOF,   // sizeof キーワード
   TK_IDENT,    // 識別子
   TK_NUM,      // 整数
   TK_EOF,      // 入力の終わり

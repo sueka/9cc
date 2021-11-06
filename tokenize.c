@@ -65,6 +65,10 @@ Token *tokenize(char *p) {
       cur = new_token(TK_INT, cur, p, 3);
       p += 3;
       continue;
+    } else if (strncmp(p, "sizeof", 6) == 0 && !is_alnum(p[6])) {
+      cur = new_token(TK_SIZEOF, cur, p, 6);
+      p += 6;
+      continue;
     } else if (
       'A' <= *p && *p <= 'Z' ||
       'a' <= *p && *p <= 'z' ||
