@@ -87,7 +87,7 @@ bool consume_for() {
   return false;
 }
 
-// 次のトークンが `return` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+// 次のトークンが `int` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
 bool consume_int() {
   if (token->kind == TK_INT) {
     token = token->next;
