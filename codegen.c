@@ -203,9 +203,29 @@ void gen(Node *node) {
       printf("  movzb rax, al\n");
       break;
     case ND_ADD:
+      if (node->lhs->kind == ND_LVAR && node->lhs->ty->ty == PTR) {
+        int s = size(node->lhs->ty->ptr_to);
+
+        while (s--) {
+          printf("  add rax, rdi\n");
+        }
+
+        break;
+      }
+
       printf("  add rax, rdi\n");
       break;
     case ND_SUB:
+      if (node->lhs->kind == ND_LVAR && node->lhs->ty->ty == PTR) {
+        int s = size(node->lhs->ty->ptr_to);
+
+        while (s--) {
+          printf("  sub rax, rdi\n");
+        }
+
+        break;
+      }
+
       printf("  sub rax, rdi\n");
       break;
     case ND_MUL:
@@ -218,4 +238,15 @@ void gen(Node *node) {
   }
 
   printf("  push rax\n");
+}
+
+// 変数の型のサイズを計算する; 後に多分 sizeof になる。
+int size(Type *ty) {
+  if (ty->ty == INT) {
+    return 4;
+  }
+
+  if (ty->ty == PTR) {
+    return 8;
+  }
 }

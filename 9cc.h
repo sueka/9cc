@@ -172,4 +172,6 @@ extern LVar *locals;
 
 void gen(Node *node);
 
+int size(Type *ty);
+
 // int main(int argc, char **argv);
