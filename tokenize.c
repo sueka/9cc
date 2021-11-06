@@ -65,12 +65,21 @@ Token *tokenize(char *p) {
       cur = new_token(TK_INT, cur, p, 3);
       p += 3;
       continue;
-    } else if ('a' <= *p && *p <= 'z') {
-      // `if ('a' <= *p && *p <= 'z')` なので len >= 1 ではある
-      cur = new_token(TK_IDENT, cur, p, 0);
+    } else if (
+      'A' <= *p && *p <= 'Z' ||
+      'a' <= *p && *p <= 'z' ||
+      *p == '_'
+    ) {
+      // NOTE: `if ('A' <= *p && *p <= 'Z' || 'a' <= *p && *p <= 'z' || *p == '_')` なので len >= 1 ではある
+      cur = new_token(TK_IDENT, cur, p, 1);
       char *q = p;
 
-      while ('a' <= *p && *p <= 'z') {
+      while (
+        '0' <= *p && *p <= '9' ||
+        'A' <= *p && *p <= 'Z' ||
+        'a' <= *p && *p <= 'z' ||
+        *p == '_'
+      ) {
         ++p;
       }
 
