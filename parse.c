@@ -3,10 +3,9 @@
 // 現在着目しているトークン
 Token *token;
 
-// 次のトークンが期待している記号の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
+// 次のトークンが期待しているトークンの場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
 bool consume(char *op) {
   if (
-    token->kind == TK_RESERVED &&
     strlen(op) == token->len &&
     !memcmp(token->str, op, token->len)
   ) {
@@ -16,97 +15,6 @@ bool consume(char *op) {
   } else {
     return false;
   }
-}
-
-// 次のトークンが期待している記号の場合は真を、それ以外の場合は偽を返す。
-bool next(char *op) {
-  return (
-    token->kind == TK_RESERVED &&
-    strlen(op) == token->len &&
-    !memcmp(token->str, op, token->len)
-  );
-}
-
-// 次のトークンが `int` の場合は真を、それ以外の場合は偽を返す。
-bool next_int() {
-  return token->kind == TK_INT;
-}
-
-// 次のトークンが `return` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
-bool consume_return() {
-  if (token->kind == TK_RETURN) {
-    token = token->next;
-
-    return true;
-  }
-
-  return false;
-}
-
-// 次のトークンが `if` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
-bool consume_if() {
-  if (token->kind == TK_IF) {
-    token = token->next;
-
-    return true;
-  }
-
-  return false;
-}
-
-// 次のトークンが `else` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
-bool consume_else() {
-  if (token->kind == TK_ELSE) {
-    token = token->next;
-
-    return true;
-  }
-
-  return false;
-}
-
-// 次のトークンが `while` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
-bool consume_while() {
-  if (token->kind == TK_WHILE) {
-    token = token->next;
-
-    return true;
-  }
-
-  return false;
-}
-
-// 次のトークンが `for` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
-bool consume_for() {
-  if (token->kind == TK_FOR) {
-    token = token->next;
-
-    return true;
-  }
-
-  return false;
-}
-
-// 次のトークンが `int` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
-bool consume_int() {
-  if (token->kind == TK_INT) {
-    token = token->next;
-
-    return true;
-  }
-
-  return false;
-}
-
-// 次のトークンが `sizeof` の場合はトークンを1つ読み進めて真を返す。それ以外の場合は偽を返す。
-bool consume_sizeof() {
-  if (token->kind == TK_SIZEOF) {
-    token = token->next;
-
-    return true;
-  }
-
-  return false;
 }
 
 // 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。
@@ -122,16 +30,24 @@ Token *consume_ident() {
   }
 }
 
-// 次のトークンが `int` の場合はトークンを1つ読み進めてそのトークンを返す。それ以外の場合はエラーを報告する。
-Token *expect_int() {
-  if (token->kind != TK_INT) {
-    error_at(token->str, "`int` ではありません。");
+// 次のトークンが期待しているトークンの場合は真を、それ以外の場合は偽を返す。
+bool next(char *op) {
+  return (
+    strlen(op) == token->len &&
+    !memcmp(token->str, op, token->len)
+  );
+}
+
+// 次のトークンが期待しているトークンの場合はトークンを1つ読み進める。それ以外の場合はエラーを報告する。
+void expect(char *op) {
+  if (
+    strlen(op) != token->len ||
+    memcmp(token->str, op, token->len)
+  ) {
+    error_at(token->str, "\"%s\" ではありません", op);
   }
 
-  Token *result = token;
   token = token->next;
-
-  return result;
 }
 
 // 次のトークンが識別子の場合はトークンを1つ読み進めてそのトークンを返す。それ以外の場合はエラーを報告する。
@@ -145,19 +61,6 @@ Token *expect_ident() {
   token = token->next;
 
   return result;
-}
-
-// 次のトークンが期待している記号の場合はトークンを1つ読み進める。それ以外の場合はエラーを報告する。
-void expect(char *op) {
-  if (
-    token->kind != TK_RESERVED ||
-    strlen(op) != token->len ||
-    memcmp(token->str, op, token->len)
-  ) {
-    error_at(token->str, "\"%s\" ではありません", op);
-  }
-
-  token = token->next;
 }
 
 // 次のトークンが数値の場合はトークンを1つ読み進めてその数値を返す。それ以外の場合はエラーを報告する。
@@ -272,7 +175,7 @@ Node *funcdefn() {
   Node *node = calloc(1, sizeof(Node));
   node->kind = ND_FDEFN;
 
-  expect_int();
+  expect("int");
 
   Token *tok = consume_ident();
   node->name = tok->str;
@@ -306,7 +209,7 @@ Node *funcdefn() {
 Node *stmt() {
   Node *node;
 
-  if (consume_if()) {
+  if (consume("if")) {
     node = new_node(ND_IF, NULL, NULL);
 
     expect("(");
@@ -314,17 +217,17 @@ Node *stmt() {
     expect(")");
     node->then = stmt();
 
-    if (consume_else()) {
+    if (consume("else")) {
       node->otherwise = stmt();
     }
-  } else if (consume_while()) {
+  } else if (consume("while")) {
     node = new_node(ND_WHILE, NULL, NULL);
 
     expect("(");
     node->cond = expr();
     expect(")");
     node->body = stmt();
-  } else if (consume_for()) {
+  } else if (consume("for")) {
     node = new_node(ND_FOR, NULL, NULL);
 
     expect("(");
@@ -335,13 +238,13 @@ Node *stmt() {
     node->iter = expr();
     expect(")");
     node->body = stmt();
-  } else if (consume_return()) {
+  } else if (consume("return")) {
     // node = calloc(1, sizeof(Node));
     // node->kind = ND_RETURN;
     // node->lhs = expr();
     node = new_node(ND_RETURN, expr(), NULL);
     expect(";");
-  } else if (next_int()) {
+  } else if (next("int")) {
     node = ldef();
     expect(";");
   } else if (next("{")) {
@@ -418,7 +321,7 @@ Type *typename() {
   Type *basety = calloc(1, sizeof(Type));
   basety->ty = INT;
 
-  expect_int();
+  expect("int");
 
   Type *ty = basety;
 
@@ -512,7 +415,7 @@ Node *mul() {
 //       | ("+" | "-")? primary
 //       | ("*" | "&") unary
 Node *unary() {
-  if (consume_sizeof()) {
+  if (consume("sizeof")) {
     Node *node = unary();
 
     return new_node_num(_sizeof(node->ty));
