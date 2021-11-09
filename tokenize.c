@@ -9,7 +9,7 @@ Token *tokenize(char *p) {
   while (*p) {
     // 空白文字をスキップ
     if (isspace(*p)) {
-      p++;
+      ++p;
       continue;
     }
 
@@ -69,21 +69,12 @@ Token *tokenize(char *p) {
       cur = new_token(TK_SIZEOF, cur, p, 6);
       p += 6;
       continue;
-    } else if (
-      'A' <= *p && *p <= 'Z' ||
-      'a' <= *p && *p <= 'z' ||
-      *p == '_'
-    ) {
-      // NOTE: `if ('A' <= *p && *p <= 'Z' || 'a' <= *p && *p <= 'z' || *p == '_')` なので len >= 1 ではある
+    } else if (is_alpha(*p)) {
+      // NOTE: `if (is_alpha(*p))` なので len >= 1 ではある
       cur = new_token(TK_IDENT, cur, p, 1);
       char *q = p;
 
-      while (
-        '0' <= *p && *p <= '9' ||
-        'A' <= *p && *p <= 'Z' ||
-        'a' <= *p && *p <= 'z' ||
-        *p == '_'
-      ) {
+      while (is_alnum(*p)) {
         ++p;
       }
 
@@ -122,6 +113,12 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
 int is_alnum(char c) {
   return ('0' <= c && c <= '9') ||
          ('A' <= c && c <= 'Z') ||
+         ('a' <= c && c <= 'z') ||
+         (c == '_');
+}
+
+int is_alpha(char c) {
+  return ('A' <= c && c <= 'Z') ||
          ('a' <= c && c <= 'z') ||
          (c == '_');
 }

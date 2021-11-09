@@ -87,7 +87,6 @@ LVar *find_lvar(Token *tok) {
     if (var->len == tok->len && !memcmp(tok->str, var->name, var->len)) {
       return var;
     }
-
   }
 
   return NULL;
@@ -239,9 +238,6 @@ Node *stmt() {
     expect(")");
     node->body = stmt();
   } else if (consume("return")) {
-    // node = calloc(1, sizeof(Node));
-    // node->kind = ND_RETURN;
-    // node->lhs = expr();
     node = new_node(ND_RETURN, expr(), NULL);
     expect(";");
   } else if (next("int")) {
@@ -474,11 +470,9 @@ Node *primary() {
       int i = 0;
 
       if (!consume(")")) {
-        node->args[i++] = expr();
-
-        while (consume(",")) {
+        do {
           node->args[i++] = expr();
-        }
+        } while (consume(","));
 
         expect(")");
       }

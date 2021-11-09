@@ -151,7 +151,6 @@ void gen(Node *node) {
       int i;
 
       for (i = 0; node->args[i]; ++i) {
-        // printf("%d\n", node->args[i]->offset);
         gen_lval(node->args[i]);
       }
 

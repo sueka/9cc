@@ -2,11 +2,10 @@
 
 // 変数の型のサイズを計算する
 int _sizeof(Type *ty) {
-  if (ty->ty == INT) {
-    return 4;
-  }
-
-  if (ty->ty == PTR) {
-    return 8;
+  switch (ty->ty) {
+    case INT:
+      return 4;
+    case PTR:
+      return 8;
   }
 }

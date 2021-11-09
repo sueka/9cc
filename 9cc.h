@@ -62,6 +62,7 @@ Token *tokenize(char *p);
 Token *new_token(TokenKind kind, Token *cur, char *str, int len);
 
 int is_alnum(char c);
+int is_alpha(char c);
 
 // 抽象構文木のノードの種類
 typedef enum {
