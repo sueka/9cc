@@ -113,7 +113,7 @@ struct Node {
   Node *args[6]; // params/args
 
   // kind が ND_BLOCK の場合のみ使う
-  Node *stmts[20];
+  Node *stmts[100];
 
   // 制御構造用の値
   // if (cond) then else otherwise
