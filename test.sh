@@ -70,6 +70,7 @@ assert 4 'int main() { int *y; return sizeof(*y); }'
 assert 4 'int main() { return sizeof(1); }'
 assert 4 'int main() { return sizeof(sizeof(1)); }'
 assert 0 'int main() { 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; return 0; }' # 9a1a6eb 時点で、文が27個以上あると127で終了する。GitHub 上のコミットページ: https://github.com/sueka/9cc/commit/9a1a6eb460e86d877f5e3b4ddecc0a0f026cf768
+assert 0 'int main() { int a; a = 0; int b; b = 0; int c; c = 0; int d; d = 0; int e; e = 0; int f; f = 0; int g; g = 0; int h; h = 0; int i; i = 0; int j; j = 0; int k; k = 0; int l; l = 0; int m; m = 0; int n; n = 0; int o; o = 0; int p; p = 0; int q; q = 0; int r; r = 0; int s; s = 0; int t; t = 0; int u; u = 0; int v; v = 0; int w; w = 0; int x; x = 0; int y; y = 0; int z; z = 0; int aa; aa = 0; int ab; ab = 0; return 0; }'
 assert 0 'int main() { int a[10]; return 0; }'
 assert 3 'int main() { int a[2]; *a = 1; *(a + 1) = 2; int *p; p = a; return *p + *(p + 1) }'
 
